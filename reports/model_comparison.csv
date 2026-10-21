@@ -1,0 +1,4 @@
+model,cv_roc_auc_mean,cv_roc_auc_std,rank,selected
+logistic_regression,0.8462,0.0125,1,True
+random_forest,0.8444,0.0089,2,False
+hist_gradient_boosting,0.8372,0.0071,3,False

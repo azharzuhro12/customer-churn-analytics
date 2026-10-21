@@ -1,0 +1,50 @@
+{
+  "dataset": {
+    "customers": 7043,
+    "churn_rate_pct": 26.54,
+    "n_train": 5634,
+    "n_test": 1409
+  },
+  "selection": {
+    "method": "5-fold stratified CV ROC-AUC on the training set",
+    "cv_folds": 5,
+    "random_state": 42
+  },
+  "candidates": [
+    {
+      "model": "logistic_regression",
+      "cv_roc_auc_mean": 0.8462,
+      "cv_roc_auc_std": 0.0125
+    },
+    {
+      "model": "random_forest",
+      "cv_roc_auc_mean": 0.8444,
+      "cv_roc_auc_std": 0.0089
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "cv_roc_auc_mean": 0.8372,
+      "cv_roc_auc_std": 0.0071
+    }
+  ],
+  "best_model": "logistic_regression",
+  "test": {
+    "roc_auc": 0.8418,
+    "pr_auc": 0.6325,
+    "precision": 0.5026,
+    "recall": 0.7834,
+    "f1": 0.6123,
+    "threshold": 0.5,
+    "confusion_matrix": {
+      "tn": 745,
+      "fp": 290,
+      "fn": 81,
+      "tp": 293
+    }
+  },
+  "gains": {
+    "at_10pct": 0.2858,
+    "at_20pct": 0.4968,
+    "at_30pct": 0.6489
+  }
+}

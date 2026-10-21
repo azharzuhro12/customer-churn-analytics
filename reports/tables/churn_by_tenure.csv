@@ -1,0 +1,5 @@
+tenure_group,customers,churned,churn_rate_pct,avg_monthly_charges
+0-12,2186,1037,47.44,56.1
+13-24,1024,294,28.71,61.36
+25-48,1594,325,20.39,65.93
+49-72,2239,213,9.51,73.95

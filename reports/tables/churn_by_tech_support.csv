@@ -1,0 +1,5 @@
+support_feature,support_level,customers,churned,churn_rate_pct
+OnlineSecurity,No,3498,1461,41.77
+OnlineSecurity,Yes,2019,295,14.61
+TechSupport,No,3473,1446,41.64
+TechSupport,Yes,2044,310,15.17
