@@ -10,7 +10,9 @@ berhenti berlangganan. Analisis menunjukkan bahwa pelanggan kontrak bulanan pada
 pertama adalah sumber churn terbesar, sehingga program retensi sebaiknya diprioritaskan
 ke segmen tersebut dan ke pelanggan dengan skor risiko tertinggi.
 
-![Dashboard overview](assets/dashboard_overview.png)
+## Demo
+
+![Customer Churn Analytics Dashboard Demo](assets/demo.gif)
 
 ## Business problem
 
@@ -140,8 +142,6 @@ ranked by a model that already knew their outcome. The final model is then fitte
 
 ## Dashboard
 
-![At-risk customers](assets/dashboard_at_risk.png)
-
 Four tabs, with sidebar filters for contract, internet service and tenure. An empty
 filter stops with a warning instead of drawing misleading empty charts.
 
@@ -161,10 +161,6 @@ filter stops with a warning instead of drawing misleading empty charts.
    ("No internet" sets all add-ons to "No internet service"; "No phone" sets Multiple
    Lines to "No phone service"). It shows the score, the percentile against all 7,043
    customers and a suggested action.
-
-![Campaign backtest](assets/dashboard_campaign.png)
-
-![Predict a customer](assets/dashboard_predict.png)
 
 Scores **rank** risk; they are not calibrated probabilities. Class weights inflate the
 average score (mean OOF risk 0.4144 against a 26.54% churn rate), so a 0.70 means
@@ -189,7 +185,7 @@ matplotlib · Plotly · Streamlit · joblib
 ├── data/                   # raw CSV; churn.db is generated
 ├── models/                 # churn_model.joblib is generated
 ├── reports/                # metrics.json, comparison, importance, tables/
-├── assets/                 # README charts and dashboard screenshots
+├── assets/                 # README charts and dashboard demo GIF
 ├── tests/test_app.py       # AppTest checks for the dashboard
 ├── requirements.txt
 ├── LEARNING_NOTES.md       # why each decision was made
