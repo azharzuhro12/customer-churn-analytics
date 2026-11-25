@@ -1,198 +1,115 @@
 # Customer Churn Analytics
 
-An end-to-end analysis of the IBM Telco customer churn sample: SQL and pandas to find
-where churn concentrates, a leakage-safe scikit-learn model to rank who is at risk, and
-a Streamlit dashboard that turns those scores into a retention worklist and a
-transparent campaign backtest.
+Analisis *end-to-end* terhadap dataset sampel *customer churn* IBM Telco: menggunakan SQL dan pandas untuk menemukan konsentrasi churn, model scikit-learn bebas *data leakage* untuk memeringkat pelanggan berisiko, serta dashboard Streamlit yang mengubah skor tersebut menjadi daftar prioritas retensi dan simulasi *backtest* kampanye yang transparan.
 
-Dataset ini adalah sampel publik IBM dengan 7.043 pelanggan, dan 26,54% di antaranya
-berhenti berlangganan. Analisis menunjukkan bahwa pelanggan kontrak bulanan pada tahun
-pertama adalah sumber churn terbesar, sehingga program retensi sebaiknya diprioritaskan
-ke segmen tersebut dan ke pelanggan dengan skor risiko tertinggi.
+Dataset ini merupakan sampel publik IBM dengan 7.043 pelanggan, dan 26,54% di antaranya berhenti berlangganan. Analisis menunjukkan bahwa pelanggan kontrak bulanan pada tahun pertama merupakan sumber churn terbesar, sehingga program retensi sebaiknya diprioritaskan ke segmen tersebut dan ke pelanggan dengan skor risiko tertinggi.
 
 ## Demo
 
-![Customer Churn Analytics Dashboard Demo](assets/demo.gif)
+![Demo Dashboard Customer Churn Analytics](assets/demo.gif)
 
-## Business problem
+## Permasalahan Bisnis
 
-A subscription business loses **1,869 of 7,043 customers (26.54%)** in this snapshot.
-Those customers represent **$139,130.85 of monthly charges — 30.50% of the $456,116.60
-total monthly revenue**. Retention spending is finite, so the business needs to answer
-three questions:
+Sebuah bisnis berbasis langganan kehilangan **1.869 dari 7.043 pelanggan (26,54%)** pada snapshot data ini. Pelanggan yang berhenti tersebut mewakili **\$139.130,85 pendapatan bulanan — 30,50% dari total pendapatan bulanan sebesar \$456.116,60**. Karena anggaran retensi terbatas, bisnis perlu menjawab tiga pertanyaan utama:
 
-1. **Where** does churn concentrate? (segment-level analysis)
-2. **Who** should the retention team contact first? (customer-level ranking)
-3. **What could a campaign return** under explicit cost and success assumptions?
+1. **Di mana** konsentrasi churn terbesar terjadi? (analisis tingkat segmen)
+2. **Siapa** pelanggan yang harus dihubungi tim retensi terlebih dahulu? (pemeringkatan tingkat pelanggan)
+3. **Berapa potensi imbal hasil kampanye** dengan asumsi biaya dan tingkat keberhasilan yang transparan?
 
-This project answers all three and keeps the evidence reproducible.
+Proyek ini menjawab ketiga pertanyaan tersebut dengan bukti yang dapat direproduksi.
 
-## Key findings
+## Rekomendasi
 
-**1. Contract length is the strongest split in the data.**
-Month-to-month customers churn at **42.71%**, versus **11.27%** on one-year and **2.83%**
-on two-year contracts — roughly **15.1×** the two-year rate.
-
-![Churn by contract](assets/churn_by_contract.png)
-
-**2. Churn is front-loaded.**
-**47.44%** of customers in their first 12 months churn, compared with **28.71%** at
-13–24 months and **9.51%** after 48 months.
-
-![Churn by tenure](assets/churn_by_tenure.png)
-
-**3. Payment method and internet product matter.**
-Electronic check customers churn at **45.29%**, versus **15.24%** for credit-card
-automatic payment. Fiber optic customers churn at **41.89%**, versus **18.96%** for DSL
-and **7.40%** for customers with no internet service.
-
-**4. Support add-ons are associated with much lower churn.**
-Among internet customers, churn is **41.64% without Tech Support vs 15.17% with it**,
-and **41.77% without Online Security vs 14.61% with it**.
-
-**5. Revenue risk is concentrated in one segment.**
-Month-to-month fiber optic customers account for **$100,482.00 of churned monthly
-revenue — 72.22% of all churned monthly revenue**. The narrower high-risk segment
-(month-to-month + fiber optic + tenure ≤ 12 months) contains **916 customers, 643 of
-whom churned (70.20%)**, carrying **$53,178.30** per month — **38.22%** of all churned
-monthly revenue.
-
-![Contract and tenure heatmap](assets/contract_tenure_heatmap.png)
-
-The heatmap shows the interaction: month-to-month churn falls from **51.35%** in the
-first year to **26.02%** after 48 months, but stays far above the two-year rates
-(**0.00%** to **3.33%**) at every tenure.
-
-## Recommendations
-
-| Action | Target | Why (evidence) |
+| Aksi | Target | Alasan (Bukti Data) |
 |---|---|---|
-| Offer an annual contract with a loyalty credit | Month-to-month customers (**3,875** customers, **42.71%** churn) | Contract is the largest observed split; the two-year rate is **2.83%** |
-| Build a first-90-days onboarding and check-in program | Tenure 0–12 months (**2,186** customers, **47.44%** churn) | Nearly half of first-year customers churn; the rate falls to **9.51%** after 48 months |
-| Bundle Tech Support / Online Security into internet plans | Internet customers without the add-ons (**3,473** without Tech Support, **41.64%** churn) | Add-on holders churn at **15.17%** (Tech Support) and **14.61%** (Online Security) |
-| Move electronic-check payers to automatic payment | Electronic check customers (**2,365**, **45.29%** churn) | Automatic credit card churn is **15.24%** |
-| Work the model's ranked at-risk list first | Month-to-month + fiber + tenure ≤ 12 (**916** customers, **70.20%** churn) | The segment carries **38.22%** of churned monthly revenue |
+| Tawarkan kontrak tahunan dengan insentif loyalitas | Pelanggan kontrak bulanan (**3.875** pelanggan, churn **42,71%**) | Jenis kontrak adalah pembeda churn terbesar; tingkat churn kontrak 2 tahun hanya **2,83%** |
+| Bangun program *onboarding* dan *check-in* 90 hari pertama | Masa berlangganan 0–12 bulan (**2.186** pelanggan, churn **47,44%**) | Hampir separuh pelanggan tahun pertama mengalami churn; turun menjadi **9,51%** setelah 48 bulan |
+| Bundel Tech Support / Online Security ke paket internet | Pelanggan internet tanpa *add-on* (**3.473** tanpa Tech Support, churn **41,64%**) | Pengguna *add-on* memiliki churn jauh lebih rendah: **15,17%** (Tech Support) dan **14,61%** (Online Security) |
+| Dorong pengguna *electronic check* beralih ke pembayaran otomatis | Pengguna *electronic check* (**2.365** pelanggan, churn **45,29%**) | Churn pembayaran kartu kredit otomatis hanya **15,24%** |
+| Prioritaskan daftar pelanggan berisiko tinggi dari model | Kontrak bulanan + fiber optic + tenure ≤ 12 bulan (**916** pelanggan, churn **70,20%**) | Segmen ini menyumbang **38,22%** dari seluruh pendapatan bulanan yang hilang akibat churn |
 
-These are **associations, not proven causes**. For example, customers who choose
-Tech Support may already be more engaged; a trial is a hypothesis to test, not a
-guaranteed lift.
+Temuan di atas bersifat **asosiasi, bukan hubungan sebab-akibat yang terbukti**. Sebagai contoh, pelanggan yang memilih Tech Support mungkin memang sudah lebih loyal sejak awal; uji coba lapangan (*A/B test*) diperlukan untuk memvalidasi dampak nyata.
 
-## The model
+## Pemodelan
 
-**Features.** `tenure`, `MonthlyCharges`, `TotalCharges` (scaled) plus every categorical
-column except `customerID`, `gender` and `Churn` (one-hot encoded with
-`handle_unknown="ignore"`). `gender` is excluded on purpose: it is not actionable and
-adds no useful signal. Preprocessing lives inside one sklearn `Pipeline`, so the scaler
-and encoder are fitted inside each cross-validation fold and never see held-out data.
+**Fitur.** `tenure`, `MonthlyCharges`, `TotalCharges` (diskalakan) ditambah seluruh kolom kategorikal kecuali `customerID`, `gender`, dan `Churn` (*one-hot encoding* dengan `handle_unknown="ignore"`). Kolom `gender` sengaja dikecualikan karena tidak dapat ditindaklanjuti dan tidak memberikan sinyal tambahan yang berarti. Seluruh prapemrosesan dibungkus dalam satu `Pipeline` scikit-learn, sehingga *scaler* dan *encoder* hanya dilatih di dalam masing-masing *fold* validasi silang dan tidak pernah melihat data validasi/uji.
 
-**Candidates.** Logistic regression (`class_weight="balanced"`), random forest
-(`class_weight="balanced_subsample"`, `min_samples_leaf=5`) and histogram gradient
-boosting (`class_weight="balanced"`).
+**Kandidat Model.** Logistic Regression (`class_weight="balanced"`), Random Forest (`class_weight="balanced_subsample"`, `min_samples_leaf=5`), dan Histogram Gradient Boosting (`class_weight="balanced"`).
 
-**Selection.** 5-fold stratified CV ROC-AUC **on the training set only** (5,634 rows).
-The test set (1,409 rows) was scored once, after selection.
+**Seleksi Model.** 5-fold stratified CV ROC-AUC **hanya pada data latih** (5.634 baris). Data uji (1.409 baris) dievaluasi tepat satu kali setelah model terpilih.
 
 | Model | CV ROC-AUC |
 |---|---|
-| **Logistic regression (selected)** | **0.8462 ± 0.0125** |
-| Random forest | 0.8444 ± 0.0089 |
-| Histogram gradient boosting | 0.8372 ± 0.0071 |
+| **Logistic Regression (terpilih)** | **0,8462 ± 0,0125** |
+| Random Forest | 0,8444 ± 0,0089 |
+| Histogram Gradient Boosting | 0,8372 ± 0,0071 |
 
-The three models are effectively tied — the gap is smaller than one standard deviation —
-so the simplest and most explainable model was selected. Extra ensemble complexity did
-not buy measurable performance here.
+Ketiga model menghasilkan skor yang praktis setara — selisihnya lebih kecil dari satu standar deviasi — sehingga model paling sederhana dan paling mudah dijelaskan dipilih. Kompleksitas *ensemble* tambahan tidak memberikan peningkatan performa yang signifikan.
 
-**Test-set metrics (threshold 0.5).**
+**Metrik Data Uji (ambang batas 0,5).**
 
-| Metric | Value |
+| Metrik | Nilai |
 |---|---|
-| ROC-AUC | **0.8418** |
-| PR-AUC | **0.6325** (no-skill baseline: 0.2654) |
-| Precision | **0.5026** |
-| Recall | **0.7834** |
-| F1 | **0.6123** |
+| ROC-AUC | **0,8418** |
+| PR-AUC | **0,6325** (*baseline* tanpa model: 0,2654) |
+| Precision | **0,5026** |
+| Recall | **0,7834** |
+| F1 | **0,6123** |
 
-| Confusion matrix | Predicted no churn | Predicted churn |
+| Confusion Matrix | Prediksi Tidak Churn | Prediksi Churn |
 |---|---|---|
-| **Actual no churn** | 745 | 290 |
-| **Actual churn** | 81 | 293 |
+| **Aktual Tidak Churn** | 745 | 290 |
+| **Aktual Churn** | 81 | 293 |
 
-Class weights push the model towards recall: it finds **78.34%** of churners, but about
-half of the customers it flags do not churn. That is a deliberate trade-off for a
-retention use case where a missed churner is usually more expensive than an extra
-contact.
+Bobot kelas (*class weights*) mendorong model ke arah *recall*: model berhasil menangkap **78,34%** pelanggan yang benar-benar churn, meskipun sekitar separuh pelanggan yang ditandai sebenarnya tidak churn. *Trade-off* ini disengaja karena pada kasus retensi, kehilangan pelanggan umumnya jauh lebih mahal daripada biaya menghubungi pelanggan ekstra.
 
-**Gains curve (test set).** Contacting the riskiest **10%** reaches **28.58%** of
-churners; the top **20%** reaches **49.68%** (versus 20% for random); the top **30%**
-reaches **64.89%**.
+**Kurva Gains (data uji).** Menghubungi **10%** pelanggan paling berisiko menjangkau **28,58%** total churner; **20%** teratas menjangkau **49,68%** (dibandingkan 20% jika acak); **30%** teratas menjangkau **64,89%**.
 
-![Gains curve](assets/gains_curve.png)
+![Kurva Gains](assets/gains_curve.png)
 
-**What drives the score.** Permutation importance on the test set (drop in ROC-AUC when
-a feature is shuffled): `tenure` **0.1561**, `InternetService` **0.0432**,
-`MonthlyCharges` **0.0410**, `Contract` **0.0394**.
+**Faktor pendorong skor.** *Permutation importance* pada data uji (penurunan ROC-AUC ketika fitur diacak): `tenure` **0,1561**, `InternetService` **0,0432**, `MonthlyCharges` **0,0410**, `Contract` **0,0394**.
 
 ![Permutation importance](assets/feature_importance.png)
 
-**Dashboard scores are out-of-fold.** `customer_scores` is produced with
-`cross_val_predict`: every customer is scored by a model trained on the other folds,
-never on their own churn label. The dashboard uses these scores, so no customer is
-ranked by a model that already knew their outcome. The final model is then fitted on all
-7,043 rows and saved to `models/churn_model.joblib`.
+**Skor dashboard menggunakan *out-of-fold*.** Tabel `customer_scores` dihasilkan menggunakan `cross_val_predict`: setiap pelanggan dinilai oleh model yang dilatih pada *fold* lain, tidak pernah melihat label churn milik pelanggan itu sendiri. Dashboard menggunakan skor ini agar pemeringkatan tidak bias. Model akhir kemudian dilatih pada seluruh 7.043 baris dan disimpan ke `models/churn_model.joblib`.
 
 ## Dashboard
 
-Four tabs, with sidebar filters for contract, internet service and tenure. An empty
-filter stops with a warning instead of drawing misleading empty charts.
+Terdiri dari empat tab dengan filter sidebar untuk kontrak, layanan internet, dan masa berlangganan (*tenure*). Jika kombinasi filter menghasilkan data kosong, aplikasi menampilkan peringatan alih-alih menggambar grafik kosong yang menyesatkan.
 
-1. **Overview** — four KPIs (customers, churn rate, monthly revenue lost, share of
-   revenue lost) and churn-rate bars by contract, tenure, payment method and internet
-   service. Each chart has a dashed overall-rate line and direct value labels.
-2. **At-risk customers** — active (not churned) customers above a risk slider. At the
-   default 0.50 threshold it shows **1,419 active customers** and **$106,360** monthly
-   revenue at risk. The table is sorted by risk, adds a rule-based suggested action and
-   offers a CSV download.
-3. **Retention campaign backtest** — contact customers from highest to lowest risk.
-   With dashboard defaults ($25 per contact, 25% success, 12 months of revenue kept),
-   the best contact share is **55.6%** with a net of **$288,758**; a fixed **20%**
-   contact rule returns **$196,814** versus **$48,243** for random targeting. Every
-   assumption is a slider and the money figures are explicitly a scenario.
-4. **Predict a customer** — enter a profile; the form forces consistent combinations
-   ("No internet" sets all add-ons to "No internet service"; "No phone" sets Multiple
-   Lines to "No phone service"). It shows the score, the percentile against all 7,043
-   customers and a suggested action.
+1. **Overview** — empat KPI utama (jumlah pelanggan, tingkat churn, pendapatan bulanan yang hilang, proporsi pendapatan hilang) serta grafik tingkat churn berdasarkan kontrak, tenure, metode pembayaran, dan layanan internet. Setiap grafik dilengkapi garis rata-rata keseluruhan dan label nilai langsung.
+2. **At-risk customers** — daftar pelanggan aktif (belum churn) di atas ambang batas risiko yang dapat diatur lewat *slider*. Pada ambang default 0,50, tampil **1.419 pelanggan aktif** dengan **\$106.360** pendapatan bulanan berisiko. Tabel diurutkan berdasarkan risiko, dilengkapi rekomendasi aksi berbasis aturan, dan tombol unduh CSV.
+3. **Retention campaign backtest** — simulasi menghubungi pelanggan dari risiko tertinggi ke terendah. Dengan pengaturan default dashboard (\$25 per kontak, tingkat keberhasilan 25%, 12 bulan pendapatan terselamatkan), porsi kontak optimal berada di **55,6%** dengan hasil bersih **\$288.758**; aturan tetap **20%** menghasilkan **\$196.814** dibandingkan **\$48.243** untuk penargetan acak. Seluruh asumsi dapat diubah melalui *slider* dan angka finansial dinyatakan secara eksplisit sebagai skenario.
+4. **Predict a customer** — formulir input profil pelanggan yang menjaga konsistensi kombinasi fitur (misalnya "No internet" otomatis mengatur seluruh *add-on* ke "No internet service"; "No phone" mengatur Multiple Lines ke "No phone service"). Menampilkan skor risiko, persentil terhadap seluruh 7.043 pelanggan, dan rekomendasi aksi.
 
-Scores **rank** risk; they are not calibrated probabilities. Class weights inflate the
-average score (mean OOF risk 0.4144 against a 26.54% churn rate), so a 0.70 means
-"higher than most customers", not "70% chance of churn".
+Skor berfungsi untuk **memeringkat** risiko, bukan probabilitas terkalibrasi. Penggunaan *class weights* menaikkan rata-rata skor (rata-rata skor OOF 0,4144 dibanding tingkat churn aktual 26,54%), sehingga skor 0,70 berarti "lebih berisiko dibanding mayoritas pelanggan", bukan "peluang churn 70%".
 
-## Tech stack
+## Tech Stack
 
-Python 3.14 · pandas 3.0 · NumPy · scikit-learn 1.9 · SQLite (`sqlite3`) ·
-matplotlib · Plotly · Streamlit · joblib
+Python 3.14 · pandas 3.0 · NumPy · scikit-learn 1.9 · SQLite (`sqlite3`) · matplotlib · Plotly · Streamlit · joblib
 
-## Project structure
+## Struktur Proyek
 
 ```
 .
-├── app.py                  # Streamlit dashboard (4 tabs)
-├── sql/queries.sql         # 9 named business queries
+├── app.py                  # Dashboard Streamlit (4 tab)
+├── sql/queries.sql         # 9 kueri bisnis bernama
 ├── src/
-│   ├── common.py           # paths, feature lists, shared sklearn pipeline
-│   ├── prepare.py          # clean CSV → SQLite `customers`
-│   ├── train.py            # model comparison, test evaluation, OOF scores
-│   └── analysis.py         # run SQL → CSV tables + README charts
-├── data/                   # raw CSV; churn.db is generated
-├── models/                 # churn_model.joblib is generated
-├── reports/                # metrics.json, comparison, importance, tables/
-├── assets/                 # README charts and dashboard demo GIF
-├── tests/test_app.py       # AppTest checks for the dashboard
+│   ├── common.py           # Path, daftar fitur, pipeline sklearn bersama
+│   ├── prepare.py          # Pembersihan CSV → tabel SQLite `customers`
+│   ├── train.py            # Perbandingan model, evaluasi uji, skor OOF
+│   └── analysis.py         # Eksekusi SQL → tabel CSV + grafik README
+├── data/                   # CSV mentah; churn.db dihasilkan oleh pipeline
+├── models/                 # churn_model.joblib dihasilkan oleh pipeline
+├── reports/                # metrics.json, perbandingan model, importance, tables/
+├── assets/                 # Grafik evaluasi model & demo GIF dashboard
+├── tests/test_app.py       # Pengujian otomatis AppTest untuk dashboard
 ├── requirements.txt
-├── LEARNING_NOTES.md       # why each decision was made
+├── LEARNING_NOTES.md       # Catatan alasan di balik setiap keputusan teknis
 └── README.md
 ```
 
-## How to run
+## Cara Menjalankan
 
 ```bash
 python -m venv .venv
@@ -203,62 +120,40 @@ mkdir -p data
 curl -L -o data/telco_customer_churn.csv \
   https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv
 
-python -m src.prepare     # clean + load SQLite
-python -m src.train       # compare models, evaluate once, save artefacts
-python -m src.analysis    # SQL tables + charts
+python -m src.prepare     # bersihkan data + muat ke SQLite
+python -m src.train       # bandingkan model, evaluasi uji, simpan artefak
+python -m src.analysis    # hasilkan tabel SQL + grafik
 
 streamlit run app.py
 ```
 
-Checks:
+Menjalankan pengujian:
 
 ```bash
 python -m pytest tests -q
 ```
 
-Everything uses `random_state=42`; deleting `data/churn.db`, `models/` and `reports/`
-and rerunning the three modules reproduces the same metrics.
+Seluruh proses menggunakan `random_state=42`; menghapus `data/churn.db`, `models/`, dan `reports/` lalu menjalankan ulang ketiga modul akan menghasilkan metrik yang identik.
 
-## Method notes and limitations
+## Catatan Metode & Keterbatasan
 
-- **No leakage.** The train/test split happens before any model fitting; scaling and
-  one-hot encoding are fitted inside the pipeline, within each CV fold. Model selection
-  uses only the training set, and the test set is touched once. Dashboard scores are
-  out-of-fold, so they are not inflated by each customer's own label.
-- **Data cleaning.** 11 `TotalCharges` values are blank; all 11 have `tenure = 0`
-  (signed up but not billed). They are set to **0**, not to the column mean, and
-  assertions prove that every blank row has tenure 0 and that `customerID` is unique.
-- **Associations are not causes.** Contract, fiber optic, Tech Support and tenure are
-  correlated with churn; none of these analyses proves that changing one changes churn.
-  A controlled experiment or uplift model is the right next step.
-- **Snapshot data, no time validation.** The dataset has no dates, so a random split can
-  put "future-looking" patterns in training. The results measure ranking skill within
-  this snapshot, not performance next quarter. There is also no way to validate that
-  the score is stable over time.
-- **Campaign backtest uses assumed costs and success.** $25 per contact, 25% offer
-  success and 12 months of retained revenue are inputs, not measurements. The "best
-  share" is chosen on the same curve it is reported on, so it is optimistic; the fixed
-  20% figure is the more honest decision rule.
-- **Scores are not calibrated.** They rank risk well (ROC-AUC 0.8418) but should not be
-  read as exact probabilities. Calibration is the next step if the business needs
-  expected-value calculations per customer.
-- **No hyperparameter search.** The candidates use sensible defaults; the close CV
-  scores suggest tuning is unlikely to change the conclusion materially.
-- **IBM sample dataset.** This is a public sample, not real data from a real company.
-  Numbers illustrate the method and should not be presented as an actual company's
-  results or used to target real people.
-- **`gender` excluded.** It is not actionable, contributes no useful signal, and using
-  it for targeting would raise fairness concerns.
+- **Bebas *data leakage*.** Pemisahan train/test dilakukan sebelum *fitting* apa pun; *scaling* dan *one-hot encoding* dilakukan di dalam pipeline pada setiap *fold* CV. Seleksi model hanya memakai data latih, dan data uji disentuh sekali. Skor dashboard menggunakan *out-of-fold* agar tidak bias oleh label pelanggan sendiri.
+- **Pembersihan data.** Terdapat 11 nilai `TotalCharges` yang kosong; seluruhnya memiliki `tenure = 0` (baru mendaftar dan belum ditagih). Nilai tersebut diisi **0** (bukan rata-rata kolom), disertai *assertion* yang memastikan seluruh baris kosong memiliki `tenure = 0` dan `customerID` bersifat unik.
+- **Asosiasi bukan kausalitas.** Kontrak, fiber optic, Tech Support, dan tenure berkorelasi dengan churn, tetapi analisis observasional tidak membuktikan hubungan sebab-akibat. Eksperimen terkontrol atau *uplift modeling* merupakan langkah lanjutan yang tepat.
+- **Data snapshot tanpa validasi waktu.** Dataset tidak memiliki kolom tanggal, sehingga pemisahan acak dapat mencampur pola lintas periode. Hasil mengukur kemampuan pemeringkatan dalam snapshot ini, bukan kestabilan performa di kuartal mendatang.
+- **Backtest kampanye menggunakan asumsi.** Biaya \$25 per kontak, tingkat keberhasilan 25%, dan 12 bulan pendapatan terselamatkan adalah input skenario, bukan hasil pengukuran nyata. Porsi kontak optimal dipilih pada kurva yang sama sehingga cenderung optimistis; aturan tetap 20% merupakan acuan keputusan yang lebih konservatif.
+- **Skor belum terkalibrasi.** Skor baik untuk pemeringkatan risiko (ROC-AUC 0,8418), namun belum berupa probabilitas eksak. Kalibrasi diperlukan jika bisnis ingin menghitung nilai ekspektasi per pelanggan.
+- **Tanpa *hyperparameter tuning* ekstensif.** Kandidat model menggunakan parameter default yang wajar; skor CV yang sangat berdekatan menunjukkan *tuning* tidak akan mengubah kesimpulan secara signifikan.
+- **Dataset sampel publik IBM.** Data ini adalah sampel publik, bukan data perusahaan nyata. Angka yang ditampilkan bertujuan mengilustrasikan metode analisis.
+- **`gender` dikecualikan.** Tidak dapat ditindaklanjuti secara bisnis, tidak menambah sinyal prediktif, dan berpotensi menimbulkan isu keadilan (*fairness*) jika dipakai untuk penargetan.
 
-## Data source
+## Sumber Data
 
-IBM Telco Customer Churn sample (7,043 rows, 21 columns):
+IBM Telco Customer Churn sample (7.043 baris, 21 kolom):
 <https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv>
 
-Original dataset page: IBM Sample Data Sets — Telco Customer Churn.
+Halaman dataset asli: IBM Sample Data Sets — Telco Customer Churn.
 
-## Reproducibility
+## Reproduksibilitas
 
-All report values in this README come from files in `reports/` produced by the commands
-above. The full pipeline (prepare → train → analysis) was rerun from a clean state and
-produced identical metrics; see `LEARNING_NOTES.md`.
+Seluruh angka laporan pada README ini berasal dari berkas di folder `reports/` yang dihasilkan oleh perintah di atas. Menjalankan ulang seluruh pipeline (`prepare` → `train` → `analysis`) dari kondisi bersih menghasilkan metrik yang identik; lihat `LEARNING_NOTES.md`.
